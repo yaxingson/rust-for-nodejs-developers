@@ -9,6 +9,125 @@ high level understand how to do X in Y and doing further learning on your own is
 
 ## Examples
 
+### comments
+
+### printing
+
+### logging
+
+### variables
+
+### types
+
+### type check
+
+### interpolation
+
+### if/else
+
+### for
+
+### while
+
+### switch
+
+### arrays
+
+### uint8 arrays
+
+### array iteration
+
+### buffers
+
+### maps
+
+### objects
+
+### functions
+
+### default values
+
+### destructuring
+
+### spread operator
+
+### rest operator
+
+### swapping
+
+### classes
+
+### generators
+
+### datetime
+
+### timeout
+
+### interval
+
+### iife
+
+### files
+
+### json
+
+### big numbers
+
+### promises
+
+### async/await
+
+### streams
+
+### event emitter
+
+### errors
+
+### try/catch
+
+### exceptions
+
+### regex
+
+### exec(sync/async)
+
+### tcp server
+
+### udp server
+
+### http server
+
+### url parse
+
+### gzip
+
+### dns
+
+### crypto
+
+### env vars
+
+### cli args
+
+### cli flags
+
+### stdout
+
+### stderr
+
+### stdin
+
+### modules
+
+### stack trace
+
+### databases
+
+### testing
+
+### benchmark
+
+### documentation
 
 ## Contributing
 
