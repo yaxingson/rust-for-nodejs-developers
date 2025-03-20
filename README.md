@@ -397,33 +397,604 @@ fn main() {
 
 ### arrays
 
+Nodejs
+
+```js
+const array = [1, 2, 3, 4, 5]
+console.log(array)
+
+const clone = array.slice(0)
+console.log(clone)
+
+const sub = array.slice(2,4)
+console.log(sub)
+
+const concatenated = clone.concat([6, 7])
+console.log(concatenated)
+
+const prepended = [-2,-1,0].concat(concatenated)
+console.log(prepended)
+
+```
+
+Rust
+
+```rs
+fn main() {
+  let arr: [i8; 5] = [1, 2, 3, 4, 5];
+  
+  let clone = &arr[0..arr.len()];
+  let sub = &arr[0..3];
+  
+  let concatenated = [clone, &[6, 7]].concat();
+  let prepended = [&[-2, -1, 0], clone].concat();
+  
+  println!("{:?} {:?} {:?}", arr, clone, sub);
+  println!("{:?}", concatenated);
+  println!("{:?}", prepended);
+}
+
+```
+
 ### uint8 arrays
+
+Nodejs
+
+```js
+const array = new Uint8Array(10)
+console.log(array)
+
+const offset = 1
+
+array.set([1, 2, 3], offset)
+console.log(array)
+
+const sub = array.subarray(2)
+console.log(sub)
+
+const sub2 = array.subarray(2,4)
+console.log(sub2)
+
+console.log(array)
+const value = 9
+const start = 5
+const end = 10
+array.fill(value, start, end)
+console.log(array)
+
+console.log(array.byteLength)
+
+```
+
+Rust
+
+```rs
+fn main() {
+  let mut arr = [0u8; 10];
+  
+  let sub = &arr[2..];
+  let sub2 = &arr[2..4];
+  
+  println!("{:?} {}", arr, arr.len());
+  println!("{:?} {:?}", sub, sub2);
+  
+  (&mut arr[5..10]).fill(9);
+  
+  println!("{:?}", arr);
+}
+
+```
 
 ### array iteration
 
+Nodejs
+
+```js
+const array = ['a', 'b', 'c']
+
+array.forEach((value, i) => {
+  console.log(i, value)
+})
+
+const mapped = array.map(value => {
+  return value.toUpperCase()
+})
+
+console.log(mapped)
+
+const filtered = array.filter((value, i) => {
+  return i % 2 == 0
+})
+
+console.log(filtered)
+
+const reduced = array.reduce((acc, value, i) => {
+  if (i % 2 == 0) {
+    acc.push(value.toUpperCase())
+  }
+
+  return acc
+}, [])
+
+console.log(reduced)
+
+```
+
+Rust
+
+```rs
+fn main() {
+  let arr = ["a", "b", "c"];
+  
+  arr.iter().for_each(|num| println!("{}", num));
+  
+  let mapped:Vec<_> = arr.iter().map(|x| x.to_uppercase()).collect();
+  let filtered: Vec<_> = arr.iter().filter(|x| x.starts_with("b")).collect();
+  let reduced = arr.iter().fold(String::new(), |acc, x| format!("{}{}", acc, x));
+  
+  println!("{:?}", mapped);
+  println!("{:?}", filtered);
+  println!("{:?}", reduced);
+}
+
+```
+
 ### buffers
+
+Nodejs
+
+```js
+const buf = Buffer.alloc(6)
+
+let value = 0x1234567890ab
+let offset = 0
+let byteLength = 6
+
+buf.writeUIntBE(value, offset, byteLength)
+
+let hexstr = buf.toString('hex')
+console.log(hexstr)
+
+const buf2 = Buffer.alloc(6)
+
+value = 0x1234567890ab
+offset = 0
+byteLength = 6
+
+buf2.writeUIntLE(value, offset, byteLength)
+
+hexstr = buf2.toString('hex')
+console.log(hexstr)
+
+let isEqual = Buffer.compare(buf, buf2) === 0
+console.log(isEqual)
+
+isEqual = Buffer.compare(buf, buf) === 0
+console.log(isEqual)
+
+```
+
+Rust
+
+```rs
+
+
+```
 
 ### maps
 
+Nodejs
+
+```js
+const map = new Map()
+map.set('foo', 'bar')
+
+let found = map.has('foo')
+console.log(found)
+
+let item = map.get('foo')
+console.log(item)
+
+map.delete('foo')
+
+found = map.has('foo')
+console.log(found)
+
+item = map.get('foo')
+console.log(item)
+
+const map2 = {}
+map2['foo'] = 'bar'
+item = map2['foo']
+delete map2['foo']
+
+const map3 = new Map()
+map3.set('foo', 100)
+map3.set('bar', 200)
+map3.set('baz', 300)
+
+for (let [key, value] of map3) {
+  console.log(key, value)
+}
+
+```
+
+Rust
+
+```rs
+use std::collections::HashMap;
+
+fn main() {
+  let mut map: HashMap<String, &str> = HashMap::new();
+  
+  map.insert("foo".to_string(), "bar");
+  
+  let found = map.contains_key("foo");
+  
+  map.remove("foo");
+  
+  if let Some(item) = map.get("foo") {
+      println!("item = {}", item);
+  } else {
+      println!("key not exist");
+  }
+  
+  println!("{:?} {}", map, found);
+}
+
+```
+
 ### objects
+
+Nodejs
+
+```js
+const obj = {
+  someProperties: {
+    'foo': 'bar'
+  },
+  someMethod: (prop) => {
+    return obj.someProperties[prop]
+  }
+}
+
+let item =  obj.someProperties['foo']
+console.log(item)
+
+item = obj.someMethod('foo')
+console.log(item)
+
+```
+
+Rust
+
+```rs
+use std::collections::HashMap;
+
+struct Obj {
+  some_properties:HashMap<String, String>
+}
+
+impl Obj {
+  fn new() -> Self {
+    let mut some_properties = HashMap::new();
+
+    some_properties.insert("foo".to_string(), "bar".to_string());
+    
+    Obj {
+        some_properties
+    }
+  }
+
+  fn some_method(&mut self, prop: &str) -> String {
+    if let Some(val) = self.some_properties.get(prop) {
+        return val.to_string();
+    } else {
+        return String::new();
+    }
+  }
+}
+
+fn main() {
+  let mut person = Obj::new();
+  
+  println!("{:?}", person.some_properties);
+  println!("{}", person.some_method("foo"));
+}
+
+```
 
 ### functions
 
+Nodejs
+
+```js
+function add(a, b) {
+  return a + b
+}
+
+const result = add(2,3)
+console.log(result)
+
+```
+
+Rust
+
+```rs
+fn add(x: i32, y: i32) -> i32 {
+  return x + y;
+}
+
+fn main() {
+  let result = add(2, 3);
+
+  println!("{}", result);
+}
+
+```
+
 ### default values
+
+Nodejs
+
+```js
+function greet(name = 'stranger') {
+  return `hello ${name}`
+}
+
+let message = greet()
+console.log(message)
+
+message = greet('bob')
+console.log(message)
+
+```
+
+Rust
+
+```rs
+fn greet(name:Option<String>) -> String {
+  let name = name.unwrap_or("stranger".to_string());
+  format!("hello {}", name)
+}
+
+fn main() {
+  println!("{}", greet(None));
+  println!("{}", greet(Some("bob".to_string())));
+}
+
+```
 
 ### destructuring
 
+Nodejs
+
+```js
+const obj = { key: 'foo', value: 'bar' }
+
+const { key, value } = obj
+console.log(key, value)
+
+```
+
+Rust
+
+```rs
+struct Point {
+  x: i32,
+  y: i32,
+}
+
+impl Point {
+  fn get_position(&self) -> (i32, i32) {
+    (self.x, self.y)
+  }    
+}
+
+fn main() {
+  let point = Point { x: 10, y: 20 };
+  
+  let Point { x, y } = point;
+  let (m, n) = point.get_position();
+
+  println!("x: {}, y: {}", x, y); 
+  println!("m: {}, n: {}", m, n);
+}
+
+```
+
 ### spread operator
+
+Nodejs
+
+```js
+const array = [1, 2, 3, 4, 5]
+
+console.log(...array)
+
+```
+
+Rust
+
+```rs
+
+
+```
 
 ### rest operator
 
+Nodejs
+
+```js
+function sum(...nums) {
+	let t = 0
+	for (let n of nums) {
+		t += n
+	}
+	return t
+}
+
+const total = sum(1, 2, 3, 4, 5)
+console.log(total)
+
+```
+
+Rust
+
+```rs
+fn sum(nums:&[i32]) -> i32 {
+  nums.iter().sum()
+}
+
+fn main() {
+  let total = sum(&[1, 2, 3, 4, 5]);   
+  println!("{}", total);
+}
+
+```
+
 ### swapping
 
+Nodejs
+
+```js
+let a = 'foo'
+let b = 'bar'
+
+console.log(a, b);
+
+[b, a] = [a, b]
+
+console.log(a, b)
+
+```
+
+Rust
+
+```rs
+fn main() {
+  let mut a = "foo";
+  let mut b = "bar";
+  
+  println!("{} {}", a, b);
+  
+  (b, a) = (a, b);
+  
+  println!("{} {}", a, b);
+}
+
+```
+
 ### classes
+
+Nodejs
+
+```js
+class Foo {
+  constructor(value) {
+    this.item = value
+  }
+
+  getItem() {
+    return this.item
+  }
+
+  setItem(value) {
+    this.item = value
+  }
+}
+
+const foo = new Foo('bar')
+console.log(foo.item)
+
+foo.setItem('qux')
+
+const item = foo.getItem()
+console.log(item)
+
+```
+Rust
+
+```rs
+struct Foo {
+  item: String
+}
+
+impl Foo {
+  fn new(value:String) -> Self {
+    Foo {
+        item:value
+    }
+  }
+
+  fn set_item(&mut self, value:String) {
+    self.item = value;
+  }
+  
+  fn get_item(&self) -> String {
+    self.item.clone()
+  }
+}
+
+fn main() {
+  let mut foo = Foo::new("bar".to_string());
+  
+  println!("{}", foo.item);
+  
+  foo.set_item("qux".to_string());
+  
+  println!("{}", foo.get_item());
+}
+
+```
 
 ### generators
 
 ### datetime
+
+Nodejs
+
+```js
+const nowUnix = Date.now()
+console.log(nowUnix)
+
+const datestr = '2019-01-17T09:24:23+00:00'
+const date = new Date(datestr)
+console.log(date.getTime())
+console.log(date.toString())
+
+const futureDate = new Date(date)
+futureDate.setDate(date.getDate()+14)
+console.log(futureDate.toString())
+
+const formatted = `${String(date.getMonth()+1).padStart(2, 0)}/${String(date.getDate()).padStart(2, 0)}/${date.getFullYear()}`
+console.log(formatted)
+
+```
+
+Rust
+
+```rs
+use chrono::{Utc, Local};
+
+fn main() {
+  let now_utc = Utc::now();
+  let now_local = Local::now();
+
+  let formatted_utc = now_utc.format("%Y-%m-%d %H:%M:%S").to_string();
+  let formatted_local = now_local.format("%Y-%m-%d %H:%M:%S").to_string();
+
+  println!("Formatted UTC time: {}", formatted_utc);
+  println!("Formatted local time: {}", formatted_local);
+
+  let custom_utc = now_utc.format("%A, %B %d, %Y %I:%M %p").to_string();
+  let custom_local = now_local.format("%A, %B %d, %Y %I:%M %p").to_string();
+
+  println!("Custom formatted UTC time: {}", custom_utc);
+  println!("Custom formatted local time: {}", custom_local);
+}
+
+```
 
 ### timeout
 
@@ -431,9 +1002,67 @@ fn main() {
 
 ### iife
 
+Nodejs
+
+```js
+(function(name) {
+  console.log('hello', name)
+})('bob')
+
+```
+
+Rust
+
+```rs
+fn main() {
+  (|name| {
+      println!("hello, {}", name);
+  })("bob")
+}
+
+```
+
 ### files
 
 ### json
+
+Nodejs
+
+```js
+let jsonstr = '{"foo":"bar"}'
+
+let parsed = JSON.parse(jsonstr)
+console.log(parsed)
+
+jsonstr = JSON.stringify(parsed)
+console.log(jsonstr)
+
+```
+
+Rust
+
+```rs
+use serde::{Deserialize, Serialize};
+use serde_json;
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Obj {
+  foo: String
+}
+
+fn main() {
+  let obj = Obj {
+    foo: "bar".to_string()
+  };
+
+  let serialized = serde_json::to_string(&obj).unwrap();
+  println!("Serialized JSON: {}", serialized);
+
+  let deserialized: Obj = serde_json::from_str(&serialized).unwrap();
+  println!("Deserialized person: {:?}", deserialized);
+} 
+
+```
 
 ### big numbers
 
@@ -453,6 +1082,44 @@ fn main() {
 
 ### regex
 
+Nodejs
+
+```js
+let input = 'foobar'
+
+let replaced = input.replace(/foo(.*)/i, 'qux$1')
+console.log(replaced)
+
+let match = /o{2}/i.test(input)
+console.log(match)
+
+input = '111-222-333'
+
+let matches = input.match(/([0-9]+)/gi)
+console.log(matches)
+
+```
+
+Rust
+
+```rs
+use regex::Regex;
+
+fn main() {
+  let mut input = "fOobar";
+  let mut re = Regex::new(r"((?i)o{2})").unwrap();
+  
+  println!("{}", re.is_match(input));
+  println!("{}", re.replace_all(input, "*$1*"));
+
+  input = "2025-03-20";
+  re = Regex::new(r"((?mi)[0-9]+)").unwrap();
+  
+  println!("{}", re.is_match(input));
+}
+
+```
+
 ### exec(sync/async)
 
 ### tcp server
@@ -462,6 +1129,50 @@ fn main() {
 ### http server
 
 ### url parse
+
+Nodejs
+
+```js
+const url = require('url')
+const qs = require('querystring')
+
+const urlstr = 'http://bob:secret@sub.example.com:8080/somepath?foo=bar'
+
+const parsed = url.parse(urlstr)
+console.log(parsed.protocol)
+console.log(parsed.auth)
+console.log(parsed.port)
+console.log(parsed.hostname)
+console.log(parsed.pathname)
+console.log(qs.parse(parsed.search.substr(1)))
+
+```
+
+Rust
+
+```rs
+use url::Url;
+
+fn main() {
+  let url_str = "http://bob:secret@sub.example.com:8080/somepath?foo=bar";
+  match Url::parse(url_str) {
+    Ok(url) => {
+      println!("Scheme: {}", url.scheme());
+      println!("Username: {}", url.username());
+      println!("Password: {}", url.password().unwrap_or("None"));
+      println!("Host: {}", url.host_str().unwrap_or("None"));
+      println!("Port: {}", url.port().unwrap_or(0));
+      println!("Path: {}", url.path());
+      println!("Query: {}", url.query().unwrap_or("None"));
+      println!("Fragment: {}", url.fragment().unwrap_or("None"));
+    }
+    Err(e) => {
+      eprintln!("Failed to parse URL: {}", e);
+    }
+  }
+}
+
+```
 
 ### gzip
 
@@ -492,6 +1203,55 @@ fn main() {
 ### benchmark
 
 ### documentation
+
+Nodejs
+
+```js
+/**
+ * Creates a new Person.
+ * @class
+ * @example
+ * const person = new Person('bob')
+ */
+class Person {
+  /**
+   * Create a person.
+   * @param {string} [name] - The person's name.
+   */
+  constructor(name) {
+    this.name = name
+  }
+
+  /**
+   * Get the person's name.
+   * @return {string} The person's name
+   * @example
+   * person.getName()
+   */
+  getName() {
+    return this.name
+  }
+
+  /**
+   * Set the person's name.
+   * @param {string} name - The person's name.
+   * @example
+   * person.setName('bob')
+   */
+  setName(name) {
+    this.name = name
+  }
+}
+
+```
+
+Rust
+
+```rs
+
+
+
+```
 
 ## Contributing
 
