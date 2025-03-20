@@ -217,16 +217,183 @@ Rust
 
 ```
 
-
 ### interpolation
+
+Nodejs
+
+```js
+const name = 'bob'
+const age = 21
+const message = `${name} is ${age} years old`
+
+console.log(message)
+
+```
+Rust
+
+```rs
+fn main() {
+  let name = "bob";
+  let age = 21;
+  let message = format!("{} is {} years old", name, age);
+  
+  println!("{}", message);
+}
+
+```
 
 ### if/else
 
+Nodejs
+
+```js
+const array = [1, 2]
+
+if (array) {
+  console.log('array exists')
+}
+
+if (array.length === 2) {
+  console.log('length is 2')
+} else if (array.length === 1) {
+  console.log('length is 1')
+} else {
+  console.log('length is other')
+}
+
+const isOddLength = array.length % 2 == 1 ? 'yes' : 'no'
+
+console.log(isOddLength)
+
+```
+
+Rust
+
+```rs
+fn main() {
+  let arr = [1, 2];
+  
+  if arr.len() == 2 {
+    println!("length is 2");
+  } else if arr.len() == 1 {
+    println!("length is 1");
+  } else {
+    println!("length is other");  
+  }
+  
+  let is_odd_length = if arr.len() % 2 == 1 { "yes" } else { "no" };
+  
+  println!("{:?} {}", arr, is_odd_length);
+}
+
+```
+
 ### for
+
+Nodejs
+
+```js
+for (let i = 0; i <= 5; i++) {
+  console.log(i)
+}
+
+```
+Rust
+
+```rs
+fn main() {
+  for i in 0..6 {
+    println!("{}", i);
+  }
+}
+
+```
 
 ### while
 
+Nodejs
+
+```js
+let i = 0
+
+while (i <= 5) {
+  console.log(i)
+  i++
+}
+
+```
+
+Rust
+
+```rs
+fn main() {
+  let mut i = 0;
+  
+  while i <= 5 {
+    println!("{}", i);
+    i += 1;  
+  }
+}
+
+```
+
 ### switch
+
+Nodejs
+
+```js
+const value = 'b'
+
+switch(value) {
+  case 'a':
+    console.log('A')
+    break
+  case 'b':
+    console.log('B')
+    break
+  case 'c':
+    console.log('C')
+    break
+  default:
+    console.log('first default')
+}
+
+switch(value) {
+  case 'a':
+    console.log('A - falling through')
+  case 'b':
+    console.log('B - falling through')
+  case 'c':
+    console.log('C - falling through')
+  default:
+    console.log('second default')
+}
+
+```
+Rust
+
+```rs
+fn main() {
+  let value = 'b';
+  
+  match value {
+    'a' => println!("A"),
+    'b' => println!("B"),
+    'c' => println!("C"),
+    _ => println!("first default")
+  }
+  
+  match value {
+    'a' => println!("A"),
+    'b' => {
+        println!("B");
+        println!("C");
+    }
+    _ => println!("first default")
+  }
+}
+
+```
 
 ### arrays
 
