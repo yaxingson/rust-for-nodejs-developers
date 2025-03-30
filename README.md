@@ -7,6 +7,14 @@
 This guide full of examples is intended for people learning Rust that are coming from Node.js, although the vice versa can work too. This is not meant to be a complete guide and it is assumed that you've gone through the [Getting Started of Rust]() tutorial. This guide is meant to be barely good enough to help you at a 
 high level understand how to do X in Y and doing further learning on your own is of course required.
 
+## Install
+
+```sh
+rustc --version
+
+
+```
+
 ## Examples
 
 ### comments
@@ -102,25 +110,30 @@ Rust
 const PI: f64 = 3.14159; 
 
 fn main() {
-    // static variable
-    static MAX_VALUE: i32 = 100;
-    
-    // explicit
-    let foo: &str = "foo";
-    
-    // type inferred
-    let bar = "bar";
-    
-    // mutable variable
-    let mut qux = "qux";
-    qux = "qux!";
-    
-    // shadowing
-    let bar = 5;
-    
-    println!("{} {} {}", foo, bar, qux);
-    println!("{}", PI);
-    println!("{}", MAX_VALUE);
+  // static variable
+  static MODULE: &'static str = "main";
+  
+  // explicit
+  let foo: String = String::from("foo");
+  
+  // type inferred
+  let bar = "bar";
+  
+  // mutable variable
+  let mut qux = "qux";
+  qux = "qux!";
+  
+  // shadowing
+  let bar = 5;
+
+  println!("{} {} {}", foo, bar, qux);
+  println!("{}", PI);
+  println!("{}", MODULE);
+
+  // borrow of moved
+  // let foo2 = foo;
+
+  // println!("{}", foo);
 }
 
 ```
@@ -158,11 +171,14 @@ Rust
 ```rs
 // scalar types
 const myBool: bool = true;
-const myInt8: i8 = 10;
-const myUint8: u8 = 10;
+const myInt32: i32 = -10;
+const myUint32: u32 = 10;
+const myIsize: isize = -10;
+const myUsize: usize = 10;
 const myChar: char = '😻';
 const myFloat32: f32 = 3.0;
 const myFloat64: f64 = 1.0;
+const myFloat: f64 = 12_818.197_2;
 
 // compound types
 const myTuple: (i32, f64, u8) = (500, 6.4, 1);
@@ -170,7 +186,11 @@ const myArray: [i32; 5] = [1, 2, 3, 4, 5];
 
 // standard library types
 const myStr: &str = "foo";
-const myString: String = String::from("Hello");
+const myStr2 = myString.as_str();
+const myString: String = String::new();
+const myString2: String = String::from("Hello");
+const myString3 = myStr.to_string();
+
 
 ```
 
@@ -305,6 +325,10 @@ fn main() {
   for i in 0..6 {
     println!("{}", i);
   }
+
+  for i in 0..=6 {
+    println!("{}", i);
+  }
 }
 
 ```
@@ -332,6 +356,16 @@ fn main() {
   while i <= 5 {
     println!("{}", i);
     i += 1;  
+  }
+
+  let mut j = 0;
+     
+  loop {
+    if j > 5 {
+      break;     
+    }
+    println!("{}", j);
+    j += 1; 
   }
 }
 
@@ -376,6 +410,14 @@ Rust
 fn main() {
   let value = 'b';
   
+  let direction = match value {
+    't' => "top",
+    'b' => "bottom",
+    'l' => "left",
+    'r' => "right",
+    _ => "other"
+  };
+
   match value {
     'a' => println!("A"),
     'b' => println!("B"),
@@ -390,6 +432,16 @@ fn main() {
         println!("C");
     }
     _ => println!("first default")
+  }
+
+  match std::env::home_dir() {
+    Some(data) => println!("{:?}", data),
+    None => println!("nothing")
+  }
+  
+  match std::env::var("PATH") {
+    Ok(data) => println!("{:?}", data),
+    Err(e) => println!("{:?}", e)
   }
 }
 
@@ -422,7 +474,7 @@ Rust
 ```rs
 fn main() {
   let arr: [i8; 5] = [1, 2, 3, 4, 5];
-  
+   
   let clone = &arr[0..arr.len()];
   let sub = &arr[0..3];
   
@@ -432,6 +484,11 @@ fn main() {
   println!("{:?} {:?} {:?}", arr, clone, sub);
   println!("{:?}", concatenated);
   println!("{:?}", prepended);
+
+  let arr2 = [0; 5];
+
+  println!("{:?}", arr2);
+
 }
 
 ```
@@ -524,8 +581,24 @@ Rust
 
 ```rs
 fn main() {
-  let arr = ["a", "b", "c"];
-  
+  let mut arr = ["a", "b", "c"];
+
+  for value in arr {
+    println!("{}", value);
+  }
+
+  for value in arr.iter() {
+    println!("{}", value);
+  }
+
+  for val in arr.into_iter() {
+    println!("{}", val);
+  }
+     
+  for val in arr.iter_mut() {
+    println!("{}", val);
+  }
+
   arr.iter().for_each(|num| println!("{}", num));
   
   let mapped:Vec<_> = arr.iter().map(|x| x.to_uppercase()).collect();
@@ -722,13 +795,50 @@ Rust
 
 ```rs
 fn add(x: i32, y: i32) -> i32 {
-  return x + y;
+  x + y
 }
+
+fn swap(x:&mut i32, y:&mut i32) {
+  let z = *x;
+  *x = *y;
+  *y = z;
+}
+
+fn sort(arr: &mut[i32;8]) {
+  let end = arr.len() - 1;
+  for _ in 0..end {
+    for i in 0..end {
+      if arr[i] > arr[i+1] {
+        (arr[i], arr[i+1]) = (arr[i+1], arr[i]);
+      }
+    }
+  }
+}
+
+fn max<T: std::cmp::PartialOrd>(x:T, y:T) -> T {
+  if x > y { x } else { y }
+}
+
 
 fn main() {
   let result = add(2, 3);
 
   println!("{}", result);
+
+  let mut x = 89;
+  let mut y = 51;
+   
+  swap(&mut x, &mut y);
+
+  println!("x={}, y={}", x, y);
+
+  let mut grades = [89, 100, 67, 50, 72, 92, 60, 83];
+        
+  sort(&mut grades);
+    
+  println!("{:?}", grades);
+
+  println!("{} {}", max(78, 10), max(56.21, 45.90));
 }
 
 ```
