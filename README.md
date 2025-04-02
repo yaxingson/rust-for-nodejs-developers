@@ -109,6 +109,12 @@ Rust
 // constant
 const PI: f64 = 3.14159; 
 
+fn bar(name: &String) {}
+
+fn func(name: &mut &str) {
+  *name = "qux!!!";
+}
+
 fn main() {
   // static variable
   static MODULE: &'static str = "main";
@@ -130,8 +136,12 @@ fn main() {
   println!("{}", PI);
   println!("{}", MODULE);
 
-  // borrow of moved
+  // move ownership(reference assignment & function parameter passing)
   // let foo2 = foo;
+
+  // borrow ownership
+  // bar(foo)
+  // func(&mut qux)
 
   // println!("{}", foo);
 }
@@ -169,6 +179,9 @@ const myClass = class {}
 Rust
 
 ```rs
+use std::collections::HashMap;
+use std::collections::HashSet;
+
 // scalar types
 const myBool: bool = true;
 const myInt32: i32 = -10;
@@ -183,6 +196,35 @@ const myFloat: f64 = 12_818.197_2;
 // compound types
 const myTuple: (i32, f64, u8) = (500, 6.4, 1);
 const myArray: [i32; 5] = [1, 2, 3, 4, 5];
+let mySlice = &myArray[0..3];
+
+#[derive(Debug)]
+enum Theme {
+    System,
+    Light,
+    Dark
+}
+
+trait Shape {
+  // abstract method
+  fn draw(&self);
+
+  fn init(&self) {
+      println!("init ...")
+  }
+}
+
+struct Circle {
+  radius:f64
+}
+
+impl Shape for Circle {
+  fn draw(&self) {
+    println!("start draw circle with a radius {}", self.radius);
+  }
+}
+
+fn drawShape<T:Shape>(shape:T) {}
 
 // standard library types
 const myStr: &str = "foo";
@@ -190,6 +232,10 @@ const myStr2 = myString.as_str();
 const myString: String = String::new();
 const myString2: String = String::from("Hello");
 const myString3 = myStr.to_string();
+
+let mut myVec: Vec<&str> = vec!["rust", "go", "dart"];
+let mut myHashMap: HashMap<&str, &str> = HashMap::new();
+let mut myHashSet: HashSet<&str> = HashSet::new();
 
 
 ```
@@ -713,6 +759,10 @@ fn main() {
   }
   
   println!("{:?} {}", map, found);
+
+  for (k, v) in map.iter() {
+    println!("[{}, {}]", k, v);
+  } 
 }
 
 ```
@@ -1026,11 +1076,13 @@ console.log(item)
 Rust
 
 ```rs
+#[derive(Debug)]
 struct Foo {
   item: String
 }
 
 impl Foo {
+  // constructor
   fn new(value:String) -> Self {
     Foo {
         item:value
@@ -1043,6 +1095,13 @@ impl Foo {
   
   fn get_item(&self) -> String {
     self.item.clone()
+  }
+
+  // static method
+  fn create(value: String) -> Self {
+    Foo {
+      item: value
+    }
   }
 }
 
