@@ -181,6 +181,7 @@ Rust
 ```rs
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::ops::Deref;
 
 // scalar types
 const myBool: bool = true;
@@ -214,6 +215,7 @@ trait Shape {
   }
 }
 
+#[derive(Debug)]
 struct Circle {
   radius:f64
 }
@@ -224,7 +226,25 @@ impl Shape for Circle {
   }
 }
 
+impl Deref for Circle {
+  type Target = f64;
+  fn deref(&self) -> &f64 {
+    return &self.radius;
+  }
+}
+
+impl Drop for Circle {
+  fn drop(&mut self) {
+    println!("circle object drop ...");
+  }
+}
+
+
 fn drawShape<T:Shape>(shape:T) {}
+
+// Box 
+let grade = 89;
+let box_of_grade = Box::new(grade);
 
 // standard library types
 const myStr: &str = "foo";
@@ -236,7 +256,6 @@ const myString3 = myStr.to_string();
 let mut myVec: Vec<&str> = vec!["rust", "go", "dart"];
 let mut myHashMap: HashMap<&str, &str> = HashMap::new();
 let mut myHashSet: HashSet<&str> = HashSet::new();
-
 
 ```
 
@@ -869,6 +888,7 @@ fn max<T: std::cmp::PartialOrd>(x:T, y:T) -> T {
   if x > y { x } else { y }
 }
 
+const mul: fn(i32, i32)->i32 = |x, y| { x * y };
 
 fn main() {
   let result = add(2, 3);
@@ -1119,6 +1139,26 @@ fn main() {
 
 ### generators
 
+Rust
+
+```rs
+fn main() {
+  let languages = vec!["rust", "go", "python"];
+  let mut it = languages.iter();
+  
+  println!("{:?}", it.next());
+  println!("{:?}", it.next());
+  println!("{:?}", it.next());
+  println!("{:?}", it.next());
+  println!("{:?}", it.next());
+  
+  for lang in languages.iter() {
+      println!("{}", lang);   
+  }
+}
+
+```
+
 ### datetime
 
 Nodejs
@@ -1193,6 +1233,42 @@ fn main() {
 
 ### files
 
+Rust 
+
+```rs
+use std::fs;
+use std::io::Write;
+use std::io::Read;
+
+fn main() {
+  let f = fs::File::open("target/debug/playground");
+  
+  println!("{:?}", f);
+  
+  // create
+  let mut f = fs::File::create("target/debug/log.txt").expect("create failed!");
+  
+  // write
+  f.write("[INFO] success init\r\n".as_bytes()).expect("write failed!");
+  f.write_all("[WARN] unused var".as_bytes()).expect("write_all failed!");
+  
+  println!("{:?}", f);
+  
+  // open
+  let mut f = fs::File::open("target/debug/log.txt").unwrap();
+  let mut content = String::new();
+  
+  // read
+  f.read_to_string(&mut content).unwrap();
+  
+  println!("{}", content);
+  
+  // remove
+  fs::remove_file("target/debug/playground").expect("remove failed!");
+}
+
+```
+
 ### json
 
 Nodejs
@@ -1245,9 +1321,26 @@ fn main() {
 
 ### errors
 
+Rust
+
+```rs
+fn main() {
+  panic!("Oh, something is wrong!");
+}
+
+```
+
 ### try/catch
 
 ### exceptions
+
+Rust
+
+```rs
+
+
+
+```
 
 ### regex
 
@@ -1290,6 +1383,27 @@ fn main() {
 ```
 
 ### exec(sync/async)
+
+Rust
+
+```rs
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+  let handler = thread::spawn(|| {
+    for i in 1..6 {
+      println!("sub process-{}", i);
+      thread::sleep(Duration::from_millis(1000));
+    }
+  });
+
+  println!("min process exec finished!");
+
+  handler.join().unwrap();
+}
+
+```
 
 ### tcp server
 
@@ -1353,15 +1467,94 @@ fn main() {
 
 ### cli args
 
+Rust
+
+```rs
+fn main() {
+  let args = std::env::args();
+
+  for arg in args {
+    println!("{}", arg);
+  }
+}
+
+```
+
 ### cli flags
 
 ### stdout
+
+Rust
+
+```rs
+use std::io::Write;
+
+fn main() {
+  let bytes = std::io::stdout().write("hello,world\r\n".as_bytes()).unwrap();
+    
+  println!("{}", bytes)
+}
+
+```
 
 ### stderr
 
 ### stdin
 
+Rust
+
+```rs
+fn main() {
+  let mut input = String::new();    
+  let bytes = std::io::stdin().read_line(&mut input).unwrap();
+    
+  println!("{} {}", input, bytes);
+}
+
+```
+
 ### modules
+
+Rust
+
+```rs
+mod web {
+  // private 
+  fn renderHTML() {}
+
+  // public
+  pub fn open(url:&str) {
+    println!("open url {}", url);
+  }
+  
+  // module nest
+  pub mod html {
+    pub fn parse() {
+      println!("parse html ...")
+    }
+  }
+}
+
+```
+
+### Packages
+
+Node
+
+```sh
+> npm install 
+
+```
+
+Rust
+
+```sh
+> cargo new --lib <library>
+> cargo build
+
+> cargo install 
+
+```
 
 ### stack trace
 
