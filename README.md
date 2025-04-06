@@ -194,6 +194,10 @@ const myFloat32: f32 = 3.0;
 const myFloat64: f64 = 1.0;
 const myFloat: f64 = 12_818.197_2;
 
+let myU8 = 5u8;
+let myFloat32 = 78.10f32;
+
+
 // compound types
 const myTuple: (i32, f64, u8) = (500, 6.4, 1);
 const myArray: [i32; 5] = [1, 2, 3, 4, 5];
@@ -256,6 +260,45 @@ const myString3 = myStr.to_string();
 let mut myVec: Vec<&str> = vec!["rust", "go", "dart"];
 let mut myHashMap: HashMap<&str, &str> = HashMap::new();
 let mut myHashSet: HashSet<&str> = HashSet::new();
+
+```
+
+### type convert
+
+Rust
+
+```rs
+// type alias
+type Boolean = bool;
+type Integer = i32;
+type Float = f64;
+
+#[derive(Debug)]
+struct Complex {
+  real:f64,
+  imag:f64
+}
+
+impl From<f64> for Complex {
+  fn from(value:f64) -> Self {
+    Complex {
+      real:value,
+      imag: value
+    }
+  }
+}
+
+fn main() {
+  let value = 56;
+  
+  // explicit type convert
+  let first_value = value as Float;
+  println!("{}", first_value);
+
+  let complex = Complex::from(78.20);
+  println!("{:?} {:?}", complex, Into::<Complex>::into(5.1));
+
+}
 
 ```
 
@@ -357,13 +400,20 @@ Rust
 ```rs
 fn main() {
   let arr = [1, 2];
-  
+  let language = Some("rust");
+
   if arr.len() == 2 {
     println!("length is 2");
   } else if arr.len() == 1 {
     println!("length is 1");
   } else {
     println!("length is other");  
+  }
+
+  if let Some(lang) = language {
+    println!("{}", lang);
+  } else {
+    println!("Oh, failed!");
   }
   
   let is_odd_length = if arr.len() % 2 == 1 { "yes" } else { "no" };
@@ -417,10 +467,16 @@ Rust
 ```rs
 fn main() {
   let mut i = 0;
+  let mut n = Some(0);
   
   while i <= 5 {
     println!("{}", i);
     i += 1;  
+  }
+
+  while let Some(val) = n {
+    println!("val = {}", val);    
+    n = if val < 9 { Some(val+1) } else { None };
   }
 
   let mut j = 0;
@@ -890,6 +946,20 @@ fn max<T: std::cmp::PartialOrd>(x:T, y:T) -> T {
 
 const mul: fn(i32, i32)->i32 = |x, y| { x * y };
 
+fn bar<F>(closure: F)  where F: Fn(i32) -> i32 {
+  println!("result = {}", closure(1));
+}
+
+fn calc(op: &str) -> impl Fn(f64, f64) -> f64 {
+  match op {
+    "+" => |x, y| x + y,
+    "-" => |x, y| x - y,
+    "*" => |x, y| x * y,
+    "/" => |x, y| x / y,
+    _ => panic!("")
+  }
+}
+
 fn main() {
   let result = add(2, 3);
 
@@ -909,6 +979,13 @@ fn main() {
   println!("{:?}", grades);
 
   println!("{} {}", max(78, 10), max(56.21, 45.90));
+
+  let y = 2;   
+  bar(|x| x+y); // Output: result = 3
+  
+  let y = 3;
+  bar(|x| x+y); // Output: result = 4
+
 }
 
 ```
